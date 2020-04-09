@@ -1,0 +1,61 @@
+accessibility: Private
+comment: List all sequences that match a pattern
+↓projects [steps.XMLComplexStep-1586436005547]: 
+  nodeName: projects
+  ↓sequenceArray [steps.XMLAttributeStep-1586436040694]: 
+    nodeName: type
+    nodeText: array
+  ↓iProjects [steps.SimpleIteratorStep-1586433758809]: 
+    expression: com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getAllProjectNamesList()
+    ↓filterProject [steps.IfStep-1586434154402]: 
+      condition: 'projectName = item; projectFilter ? projectName.match(new RegExp(projectFilter)) != null : true'
+      ↓project [steps.XMLComplexStep-1586433944292]: 
+        nodeName: project
+        ↓sequenceArray [steps.XMLAttributeStep-1586435577013]: 
+          nodeName: type
+          nodeText: object
+        ↓projectName [steps.ElementStep-1586435388748]: 
+          expression: projectName
+          nodeName: name
+        ↓projectComment [steps.ElementStep-1586435706445]: 
+          expression: prj = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getOriginalProjectByName(projectName) ; prj.getComment()
+          nodeName: comment
+        ↓sequences [steps.XMLComplexStep-1586435473064]: 
+          nodeName: sequences
+          ↓sequenceArray [steps.XMLAttributeStep-1586435521698]: 
+            nodeName: type
+            nodeText: array
+          ↓iSequences [steps.SimpleIteratorStep-1586434455687]: 
+            expression: prj.getSequencesList()
+            ↓filterSequence [steps.IfStep-1586434654833]: 
+              condition: 'sequenceName = item.getName(); sequenceFilter ? sequenceName.match(new RegExp(sequenceFilter)) != null : true'
+              ↓sequence [steps.XMLComplexStep-1586434619328]: 
+                nodeName: sequence
+                ↓sequenceArray [steps.XMLAttributeStep-1586435558276]: 
+                  nodeName: type
+                  nodeText: object
+                ↓sequenceName [steps.ElementStep-1586434870776]: 
+                  expression: sequenceName
+                  nodeName: name
+                ↓sequenceComment [steps.ElementStep-1586435637381]: 
+                  expression: item.getComment()
+                  nodeName: comment
+↓Cleanup [steps.SimpleStep-1586435811872]: 
+  expression: |
+    'var list = context.getXpathApi().selectList(dom.getDocumentElement(), "./projects/project[not(sequences/sequence)]");
+    var i = list.iterator();
+    while (i.hasNext()) {
+    	var elt = i.next();
+    	var parent = elt.getParentNode();
+    	parent.removeChild(elt);
+    }'
+↓projectFilter [variables.RequestableVariable-1586434083236]: 
+↓sequenceFilter [variables.RequestableVariable-1586434093406]: 
+↓fill [core.TestCase]: 
+  ↓projectFilter [variables.TestCaseVariable-1586435240069]: 
+  ↓sequenceFilter [variables.TestCaseVariable-1586435240071]: 
+    value: ^fill_
+↓tpl [core.TestCase]: 
+  ↓projectFilter [variables.TestCaseVariable-1586434256139]: 
+    value: _tpl_
+  ↓sequenceFilter [variables.TestCaseVariable-1586434256141]: 
